@@ -21,10 +21,10 @@ The Policy required to deploy this module:
             "Action": [
                 "secretsmanager:CreateSecret",
                 "secretsmanager:DeleteSecret",
-                "secretsmanager:DescribeSecret",
-                "secretsmanager:GetResourcePolicy",
+                "secretsmanager:DescribeSecret",  
                 "secretsmanager:GetSecretValue",
-                "secretsmanager:PutSecretValue"
+                "secretsmanager:PutSecretValue",
+                "secretsmanager:GetResourcePolicy"
             ],
             "Resource": [
                 "*"
