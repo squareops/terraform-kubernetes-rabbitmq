@@ -44,7 +44,7 @@ variable "recovery_window_aws_secret" {
 }
 
 variable "create_namespace" {
-  type = string
+  type        = string
   description = "Set it to true to create given namespace"
-  default = true
+  default     = true
 }

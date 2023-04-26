@@ -27,30 +27,29 @@ resource "kubernetes_namespace" "rabbitmq" {
   count = var.create_namespace ? 1 : 0
   metadata {
     annotations = {}
-
-    name = var.namespace
+    name        = var.namespace
   }
 }
 
 resource "helm_release" "rabbitmq" {
   depends_on = [kubernetes_namespace.rabbitmq]
   name       = "rabbitmq"
-  repository = "https://charts.bitnami.com/bitnami"
   chart      = "rabbitmq"
-  namespace  = var.namespace
   version    = var.chart_version
   timeout    = 600
-
+  namespace  = var.namespace
+  repository = "https://charts.bitnami.com/bitnami"
   values = [
     templatefile("${path.module}/helm/values/values.yaml", {
+      hostname                  = var.rabbitmq_config.hostname,
+      replicacount              = var.rabbitmq_config.replica_count,
       rabbitmq_username         = var.username,
       rabbitmq_password         = random_password.rabbitmq_password.result,
-      erlangcookie_password     = random_password.erlangcookie_password.result,
-      replicacount              = var.rabbitmq_config.replica_count,
+      storage_class_name        = var.rabbitmq_config.storage_class_name,
       rabbitmq_volume_size      = var.rabbitmq_config.volume_size,
-      hostname                  = var.rabbitmq_config.hostname,
-      rabbitmq_exporter_enabled = var.rabbitmq_exporter_enabled,
-      storage_class_name        = var.rabbitmq_config.storage_class_name
+      erlangcookie_password     = random_password.erlangcookie_password.result,
+      rabbitmq_exporter_enabled = var.rabbitmq_exporter_enabled
+
     }),
     var.rabbitmq_config.values_yaml
   ]
