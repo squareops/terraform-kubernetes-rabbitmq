@@ -1036,7 +1036,7 @@ metrics:
     enabled: true
     ## @param metrics.serviceMonitor.namespace Specify the namespace in which the serviceMonitor resource will be created
     ##
-    namespace: "monitoring"
+    namespace: "${service_monitor_namespace}"
     ## @param metrics.serviceMonitor.interval Specify the interval at which metrics should be scraped
     ##
     interval: 30s

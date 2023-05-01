@@ -49,6 +49,7 @@ resource "helm_release" "rabbitmq" {
       rabbitmq_volume_size      = var.rabbitmq_config.volume_size,
       erlangcookie_password     = random_password.erlangcookie_password.result,
       rabbitmq_exporter_enabled = var.rabbitmq_exporter_enabled
+      service_monitor_namespace = var.namespace
 
     }),
     var.rabbitmq_config.values_yaml
