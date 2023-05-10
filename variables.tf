@@ -9,7 +9,7 @@ variable "rabbitmq_config" {
     values_yaml        = ""
   }
   type        = any
-  description = "Specify the configuration settings for Redis, including the name, environment, storage options, replication settings, and custom YAML values."
+  description = "Specify the configuration settings for RabbitMQ, including the name, environment, storage options, replication settings, and custom YAML values."
 }
 
 variable "username" {
@@ -33,7 +33,7 @@ variable "chart_version" {
 variable "rabbitmq_exporter_enabled" {
   default     = true
   type        = bool
-  description = "Specify whether or not to deploy Redis exporter to collect Redis metrics for monitoring in Grafana."
+  description = "Specify whether or not to deploy RabbitMQ exporter to collect RabbitMQ metrics for monitoring in Grafana."
 }
 
 variable "recovery_window_aws_secret" {
