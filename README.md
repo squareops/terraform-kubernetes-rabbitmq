@@ -6,20 +6,38 @@
 
 ### [SquareOps Technologies](https://squareops.com/) Your DevOps Partner for Accelerating cloud journey.
 <br>
+This Terraform module allows you to deploy a RabbitMQ message broker on a Kubernetes cluster. It uses the [official RabbitMQ](https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq) Helm chart to create a scalable, highly-available RabbitMQ cluster.
+
+The module provides a simple way to configure and deploy RabbitMQ on Kubernetes, including the ability to:
+
+  1. Customize the name and environment of the RabbitMQ deployment
+  2. Specify the number of replicas in the cluster
+  3. Set up persistent storage using a specific storage class and volume size
+  4. Deploy a RabbitMQ exporter to collect metrics for Grafana
+  5. Control whether or not to create the Kubernetes namespace for the deployment
+
+The module also includes sensible defaults for all configuration options, making it easy to get up and running with RabbitMQ on Kubernetes quickly.
+
+  ## Supported Versions:
+
+|  Rabbitmq Helm Chart Version    |     K8s supported version   |  
+| :-----:                       |         :---                |
+| **10.3.5**                     |    **1.23,1.24,1.25**           |
+
 
 ## Usage Example
 
 ```hcl
 module "rabbitmq" {
-  source                     = "../../"
+  source               = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
   rabbitmq_config = {
-    name               = "skaf"
-    hostname           = "rabbitmq.dev.skaf.squareops.in"
+    name               = "rabbitmq"
+    hostname           = "rabbitmq.squareops.in"
     environment        = "prod"
-    values_yaml        = file("./helm/values.yaml")
+    values_yaml        = ""
     volume_size        = "50Gi"
     replica_count      = 2  
-    storage_class_name = "infra-service-sc"
+    storage_class_name = ""
    }
   rabbitmq_exporter_enabled  = true
   recovery_window_aws_secret = 0
@@ -75,23 +93,23 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Chart version of rabbitmq | `string` | `"10.3.5"` | no |
-| <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | Set it to true to create given namespace | `string` | `true` | no |
-| <a name="input_namespace"></a> [namespace](#input\_namespace) | Enter namespace name | `string` | `"rabbitmq"` | no |
-| <a name="input_rabbitmq_config"></a> [rabbitmq\_config](#input\_rabbitmq\_config) | Rabbitmq configurations | `any` | <pre>{<br>  "environment": "",<br>  "hostname": "",<br>  "name": "",<br>  "replica_count": 2,<br>  "storage_class_name": "",<br>  "values_yaml": "",<br>  "volume_size": ""<br>}</pre> | no |
-| <a name="input_rabbitmq_exporter_enabled"></a> [rabbitmq\_exporter\_enabled](#input\_rabbitmq\_exporter\_enabled) | Set true to deploy rabbitmq exporter to get metrics in grafana | `bool` | `true` | no |
-| <a name="input_recovery_window_aws_secret"></a> [recovery\_window\_aws\_secret](#input\_recovery\_window\_aws\_secret) | Number of days that AWS Secrets Manager waits before it can delete the secret. This value can be 0 to force deletion without recovery or range from 7 to 30 days. | `number` | `0` | no |
-| <a name="input_username"></a> [username](#input\_username) | Enter user name | `string` | `"admin"` | no |
+| <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Version of the RabbitMQ chart that will be used to deploy the message broker. | `string` | `"10.3.5"` | no |
+| <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | Specify whether or not to create the namespace if it does not already exist. Set it to true to create the namespace. | `string` | `true` | no |
+| <a name="input_namespace"></a> [namespace](#input\_namespace) | Name of the Kubernetes namespace where the RabbitMQ deployment will be deployed. | `string` | `"rabbitmq"` | no |
+| <a name="input_rabbitmq_config"></a> [rabbitmq\_config](#input\_rabbitmq\_config) | Specify the configuration settings for RabbitMQ, including the name, environment, storage options, replication settings, and custom YAML values. | `any` | <pre>{<br>  "environment": "",<br>  "hostname": "",<br>  "name": "",<br>  "replica_count": 2,<br>  "storage_class_name": "",<br>  "values_yaml": "",<br>  "volume_size": ""<br>}</pre> | no |
+| <a name="input_rabbitmq_exporter_enabled"></a> [rabbitmq\_exporter\_enabled](#input\_rabbitmq\_exporter\_enabled) | Specify whether or not to deploy RabbitMQ exporter to collect RabbitMQ metrics for monitoring in Grafana. | `bool` | `true` | no |
+| <a name="input_recovery_window_aws_secret"></a> [recovery\_window\_aws\_secret](#input\_recovery\_window\_aws\_secret) | Number of days that AWS Secrets Manager will wait before deleting a secret. This value can be set to 0 to force immediate deletion, or to a value between 7 and 30 days to allow for recovery. | `number` | `0` | no |
+| <a name="input_username"></a> [username](#input\_username) | Username that will be used for authentication when connecting to the RabbitMQ cluster. | `string` | `"admin"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_rabbitmq_AMQP_port"></a> [rabbitmq\_AMQP\_port](#output\_rabbitmq\_AMQP\_port) | rabbitmq AMQP(Advanced Message Queuing Protocol) port |
-| <a name="output_rabbitmq_endpoint"></a> [rabbitmq\_endpoint](#output\_rabbitmq\_endpoint) | rabbitmq pod connection endpoint |
-| <a name="output_rabbitmq_headless_endpoint"></a> [rabbitmq\_headless\_endpoint](#output\_rabbitmq\_headless\_endpoint) | rabbitmq pod connection endpoint |
-| <a name="output_rabbitmq_management_hostname"></a> [rabbitmq\_management\_hostname](#output\_rabbitmq\_management\_hostname) | rabbitmq management hostnae |
-| <a name="output_rabbitmq_management_interface_port"></a> [rabbitmq\_management\_interface\_port](#output\_rabbitmq\_management\_interface\_port) | rabbitmq management interface port |
+| <a name="output_rabbitmq_AMQP_port"></a> [rabbitmq\_AMQP\_port](#output\_rabbitmq\_AMQP\_port) | Port number on which the RabbitMQ pod exposes the AMQP (Advanced Message Queuing Protocol) interface. |
+| <a name="output_rabbitmq_endpoint"></a> [rabbitmq\_endpoint](#output\_rabbitmq\_endpoint) | Endpoint of the RabbitMQ pod that can be used to connect to the message broker. |
+| <a name="output_rabbitmq_headless_endpoint"></a> [rabbitmq\_headless\_endpoint](#output\_rabbitmq\_headless\_endpoint) | Headless endpoint of the RabbitMQ pod that can be used to connect to the message broker. |
+| <a name="output_rabbitmq_management_hostname"></a> [rabbitmq\_management\_hostname](#output\_rabbitmq\_management\_hostname) | Hostname that can be used to access the RabbitMQ management interface from outside the Kubernetes cluster. |
+| <a name="output_rabbitmq_management_interface_port"></a> [rabbitmq\_management\_interface\_port](#output\_rabbitmq\_management\_interface\_port) | Port number on which the RabbitMQ pod exposes its web-based management interface, which can be used to monitor and manage the message broker. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Contribution & Issue Reporting

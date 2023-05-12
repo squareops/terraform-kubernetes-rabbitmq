@@ -1,14 +1,19 @@
 locals {
+  name        = "rabbitmq"
   region      = "us-east-2"
-  name        = "dev"
-  environment = "skaf"
+  environment = "prod"
+  additional_tags = {
+    Owner      = "organization_name"
+    Expires    = "Never"
+    Department = "Engineering"
+  }
 }
 
 module "rabbitmq" {
-  source = "../../"
+  source = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
   rabbitmq_config = {
     name               = local.name
-    hostname           = "rabbitmq.dev.skaf.squareops.in"
+    hostname           = "rabbitmq.squareops.in"
     environment        = local.environment
     values_yaml        = file("./helm/values.yaml")
     volume_size        = "50Gi"
