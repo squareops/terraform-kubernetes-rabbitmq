@@ -28,6 +28,9 @@ resource "kubernetes_namespace" "rabbitmq" {
   metadata {
     annotations = {}
     name        = var.namespace
+    labels = {
+      "pod-security.kubernetes.io/warn" = "restricted"
+    }
   }
 }
 
