@@ -1,12 +1,13 @@
 variable "rabbitmq_config" {
   default = {
-    name               = ""
-    environment        = ""
-    replica_count      = 2
-    storage_class_name = ""
-    volume_size        = ""
-    hostname           = ""
-    values_yaml        = ""
+    name                             = ""
+    environment                      = ""
+    replica_count                    = 2
+    storage_class_name               = ""
+    volume_size                      = ""
+    hostname                         = ""
+    store_password_to_secret_manager = ""
+    values_yaml                      = ""
   }
   type        = any
   description = "Specify the configuration settings for RabbitMQ, including the name, environment, storage options, replication settings, and custom YAML values."
@@ -46,4 +47,19 @@ variable "create_namespace" {
   default     = true
   type        = string
   description = "Specify whether or not to create the namespace if it does not already exist. Set it to true to create the namespace."
+}
+
+variable "custom_credentials_enabled" {
+  type        = bool
+  default     = false
+  description = "Specifies whether to enable custom credentials for Rabbitmq."
+}
+
+variable "custom_credentials_config" {
+  type = any
+  default = {
+    rabbitmq_password     = "",
+    erlangcookie_password = ""
+  }
+  description = "Specify the configuration settings for Rabbitmq to pass custom credentials during creation."
 }
