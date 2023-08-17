@@ -22,7 +22,7 @@ The module also includes sensible defaults for all configuration options, making
 
 |  Rabbitmq Helm Chart Version    |     K8s supported version   |  
 | :-----:                       |         :---                |
-| **10.3.5**                     |    **1.23,1.24,1.25**           |
+| **10.3.5**                     |    **1.23,1.24,1.25,1.26,1.27**           |
 
 
 ## Usage Example
@@ -31,16 +31,21 @@ The module also includes sensible defaults for all configuration options, making
 module "rabbitmq" {
   source               = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
   rabbitmq_config = {
-    name               = "rabbitmq"
-    hostname           = "rabbitmq.squareops.in"
-    environment        = "prod"
-    values_yaml        = ""
-    volume_size        = "50Gi"
-    replica_count      = 2  
-    storage_class_name = ""
+    name                             = "rabbitmq"
+    hostname                         = "rabbitmq.squareops.in"
+    environment                      = "prod"
+    values_yaml                      = ""
+    volume_size                      = "50Gi"
+    replica_count                    = 2  
+    storage_class_name               = "gp3"
+    store_password_to_secret_manager = true
    }
   rabbitmq_exporter_enabled  = true
   recovery_window_aws_secret = 0
+  custom_credentials_config = {
+    rabbitmq_password     = "aa0z1IoRjOgRuon3aG",
+    erlangcookie_password = "bbddff0z1IoRuon3aG"
+  }
 }
 
 
@@ -95,8 +100,10 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Version of the RabbitMQ chart that will be used to deploy the message broker. | `string` | `"10.3.5"` | no |
 | <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | Specify whether or not to create the namespace if it does not already exist. Set it to true to create the namespace. | `string` | `true` | no |
+| <a name="input_custom_credentials_config"></a> [custom\_credentials\_config](#input\_custom\_credentials\_config) | Specify the configuration settings for Rabbitmq to pass custom credentials during creation. | `any` | <pre>{<br>  "erlangcookie_password": "",<br>  "rabbitmq_password": ""<br>}</pre> | no |
+| <a name="input_custom_credentials_enabled"></a> [custom\_credentials\_enabled](#input\_custom\_credentials\_enabled) | Specifies whether to enable custom credentials for Rabbitmq. | `bool` | `false` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Name of the Kubernetes namespace where the RabbitMQ deployment will be deployed. | `string` | `"rabbitmq"` | no |
-| <a name="input_rabbitmq_config"></a> [rabbitmq\_config](#input\_rabbitmq\_config) | Specify the configuration settings for RabbitMQ, including the name, environment, storage options, replication settings, and custom YAML values. | `any` | <pre>{<br>  "environment": "",<br>  "hostname": "",<br>  "name": "",<br>  "replica_count": 2,<br>  "storage_class_name": "",<br>  "values_yaml": "",<br>  "volume_size": ""<br>}</pre> | no |
+| <a name="input_rabbitmq_config"></a> [rabbitmq\_config](#input\_rabbitmq\_config) | Specify the configuration settings for RabbitMQ, including the name, environment, storage options, replication settings, and custom YAML values. | `any` | <pre>{<br>  "environment": "",<br>  "hostname": "",<br>  "name": "",<br>  "replica_count": 2,<br>  "storage_class_name": "",<br>  "store_password_to_secret_manager": "",<br>  "values_yaml": "",<br>  "volume_size": ""<br>}</pre> | no |
 | <a name="input_rabbitmq_exporter_enabled"></a> [rabbitmq\_exporter\_enabled](#input\_rabbitmq\_exporter\_enabled) | Specify whether or not to deploy RabbitMQ exporter to collect RabbitMQ metrics for monitoring in Grafana. | `bool` | `true` | no |
 | <a name="input_recovery_window_aws_secret"></a> [recovery\_window\_aws\_secret](#input\_recovery\_window\_aws\_secret) | Number of days that AWS Secrets Manager will wait before deleting a secret. This value can be set to 0 to force immediate deletion, or to a value between 7 and 30 days to allow for recovery. | `number` | `0` | no |
 | <a name="input_username"></a> [username](#input\_username) | Username that will be used for authentication when connecting to the RabbitMQ cluster. | `string` | `"admin"` | no |
@@ -105,11 +112,8 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_rabbitmq_AMQP_port"></a> [rabbitmq\_AMQP\_port](#output\_rabbitmq\_AMQP\_port) | Port number on which the RabbitMQ pod exposes the AMQP (Advanced Message Queuing Protocol) interface. |
-| <a name="output_rabbitmq_endpoint"></a> [rabbitmq\_endpoint](#output\_rabbitmq\_endpoint) | Endpoint of the RabbitMQ pod that can be used to connect to the message broker. |
-| <a name="output_rabbitmq_headless_endpoint"></a> [rabbitmq\_headless\_endpoint](#output\_rabbitmq\_headless\_endpoint) | Headless endpoint of the RabbitMQ pod that can be used to connect to the message broker. |
-| <a name="output_rabbitmq_management_hostname"></a> [rabbitmq\_management\_hostname](#output\_rabbitmq\_management\_hostname) | Hostname that can be used to access the RabbitMQ management interface from outside the Kubernetes cluster. |
-| <a name="output_rabbitmq_management_interface_port"></a> [rabbitmq\_management\_interface\_port](#output\_rabbitmq\_management\_interface\_port) | Port number on which the RabbitMQ pod exposes its web-based management interface, which can be used to monitor and manage the message broker. |
+| <a name="output_rabbitmq_credential"></a> [rabbitmq\_credential](#output\_rabbitmq\_credential) | Rabbitmq credentials used in the Kubernetes cluster. |
+| <a name="output_rabbitmq_endpoints"></a> [rabbitmq\_endpoints](#output\_rabbitmq\_endpoints) | Rabbitmq endpoints in the Kubernetes cluster. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Contribution & Issue Reporting
