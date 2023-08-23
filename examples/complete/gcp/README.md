@@ -15,20 +15,21 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_google"></a> [google](#provider\_google) | n/a |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_gcp"></a> [gcp](#module\_gcp) | https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//provider/gcp | n/a |
 | <a name="module_rabbitmq"></a> [rabbitmq](#module\_rabbitmq) | https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aws_eks_cluster.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth) | data source |
+| [google_client_config.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/client_config) | data source |
+| [google_container_cluster.primary](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/container_cluster) | data source |
 
 ## Inputs
 

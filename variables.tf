@@ -63,3 +63,15 @@ variable "custom_credentials_config" {
   }
   description = "Specify the configuration settings for Rabbitmq to pass custom credentials during creation."
 }
+
+variable "erlangcookie_password" {
+  description = "password for Rabbitmq erlangcookie"
+  type        = string
+  default     = ""
+}
+
+variable "rabbitmq_password" {
+  description = "password for Rabbitmq"
+  type        = string
+  default     = ""
+}

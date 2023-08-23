@@ -74,10 +74,8 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
-| <a name="provider_random"></a> [random](#provider\_random) | n/a |
 
 ## Modules
 
@@ -87,12 +85,8 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_secretsmanager_secret.rabbitmq_password](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
-| [aws_secretsmanager_secret_version.rabbitmq_password](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
 | [helm_release.rabbitmq](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_namespace.rabbitmq](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
-| [random_password.erlangcookie_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
-| [random_password.rabbitmq_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 
 ## Inputs
 
@@ -102,9 +96,11 @@ No modules.
 | <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | Specify whether or not to create the namespace if it does not already exist. Set it to true to create the namespace. | `string` | `true` | no |
 | <a name="input_custom_credentials_config"></a> [custom\_credentials\_config](#input\_custom\_credentials\_config) | Specify the configuration settings for Rabbitmq to pass custom credentials during creation. | `any` | <pre>{<br>  "erlangcookie_password": "",<br>  "rabbitmq_password": ""<br>}</pre> | no |
 | <a name="input_custom_credentials_enabled"></a> [custom\_credentials\_enabled](#input\_custom\_credentials\_enabled) | Specifies whether to enable custom credentials for Rabbitmq. | `bool` | `false` | no |
+| <a name="input_erlangcookie_password"></a> [erlangcookie\_password](#input\_erlangcookie\_password) | password for Rabbitmq erlangcookie | `string` | `""` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Name of the Kubernetes namespace where the RabbitMQ deployment will be deployed. | `string` | `"rabbitmq"` | no |
 | <a name="input_rabbitmq_config"></a> [rabbitmq\_config](#input\_rabbitmq\_config) | Specify the configuration settings for RabbitMQ, including the name, environment, storage options, replication settings, and custom YAML values. | `any` | <pre>{<br>  "environment": "",<br>  "hostname": "",<br>  "name": "",<br>  "replica_count": 2,<br>  "storage_class_name": "",<br>  "store_password_to_secret_manager": "",<br>  "values_yaml": "",<br>  "volume_size": ""<br>}</pre> | no |
 | <a name="input_rabbitmq_exporter_enabled"></a> [rabbitmq\_exporter\_enabled](#input\_rabbitmq\_exporter\_enabled) | Specify whether or not to deploy RabbitMQ exporter to collect RabbitMQ metrics for monitoring in Grafana. | `bool` | `true` | no |
+| <a name="input_rabbitmq_password"></a> [rabbitmq\_password](#input\_rabbitmq\_password) | password for Rabbitmq | `string` | `""` | no |
 | <a name="input_recovery_window_aws_secret"></a> [recovery\_window\_aws\_secret](#input\_recovery\_window\_aws\_secret) | Number of days that AWS Secrets Manager will wait before deleting a secret. This value can be set to 0 to force immediate deletion, or to a value between 7 and 30 days to allow for recovery. | `number` | `0` | no |
 | <a name="input_username"></a> [username](#input\_username) | Username that will be used for authentication when connecting to the RabbitMQ cluster. | `string` | `"admin"` | no |
 
