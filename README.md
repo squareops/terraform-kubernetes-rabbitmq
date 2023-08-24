@@ -20,7 +20,7 @@ The module also includes sensible defaults for all configuration options, making
 
   ## Supported Versions:
 
-|  Rabbitmq Helm Chart Version    |     K8s supported version   |  
+|  Rabbitmq Helm Chart Version    |     K8s supported version (EKS, AKS & GCP)   |  
 | :-----:                       |         :---                |
 | **10.3.5**                     |    **1.23,1.24,1.25,1.26,1.27**           |
 
@@ -28,29 +28,47 @@ The module also includes sensible defaults for all configuration options, making
 ## Usage Example
 
 ```hcl
-module "rabbitmq" {
-  source               = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
-  rabbitmq_config = {
-    name                             = "rabbitmq"
-    hostname                         = "rabbitmq.squareops.in"
-    environment                      = "prod"
-    values_yaml                      = ""
-    volume_size                      = "50Gi"
-    replica_count                    = 2  
-    storage_class_name               = "gp3"
-    store_password_to_secret_manager = true
-   }
-  rabbitmq_exporter_enabled  = true
-  recovery_window_aws_secret = 0
-  custom_credentials_config = {
+module "aws" {
+  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//provider/aws"
+  environment                      = "prod"
+  name                             = "rabbitmq"
+  store_password_to_secret_manager = true
+  custom_credentials_enabled       = true
+  custom_credentials_config        = {
     rabbitmq_password     = "aa0z1IoRjOgRuon3aG",
     erlangcookie_password = "bbddff0z1IoRuon3aG"
   }
 }
 
+module "rabbitmq" {
+  source = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  rabbitmq_config = {
+    name                             = "rabbitmq"
+    hostname                         = "rabbitmq.squareops.in"
+    environment                      = "prod"
+    values_yaml                      = file("./helm/values.yaml")
+    volume_size                      = "50Gi"
+    replica_count                    = 2
+    storage_class_name               = "infra-service-sc"
+    store_password_to_secret_manager = true
+  }
+  rabbitmq_exporter_enabled  = true
+  recovery_window_aws_secret = 0
+  custom_credentials_enabled = true
+  custom_credentials_config  = {
+    rabbitmq_password     = "aa0z1IoRjOgRuon3aG",
+    erlangcookie_password = "bbddff0z1IoRuon3aG"
+  }
+  rabbitmq_password          = true ? "" : module.aws.rabbitmq_password
+  erlangcookie_password      = true ? "" : module.aws.erlangcookie_password
+}
+
+
 
 ```
-Refer [examples](https://github.com/sq-ia/terraform-kubernetes-rabbitmq/tree/main/examples/complete) for more details.
+- Refer [AWS examples](https://github.com/sq-ia/terraform-kubernetes-rabbitmq/tree/main/examples/complete/aws) for more details.
+- Refer [Azure examples](https://github.com/sq-ia/terraform-kubernetes-rabbitmq/tree/main/examples/complete/azure) for more details.
+- Refer [GCP examples](https://github.com/sq-ia/terraform-kubernetes-rabbitmq/tree/main/examples/complete/gcp) for more details.
 
 ## IAM Permissions
 The required IAM permissions to create resources from this module can be found [here](https://github.com/sq-ia/terraform-kubernetes-rabbitmq/blob/main/IAM.md)
@@ -63,8 +81,7 @@ The required IAM permissions to create resources from this module can be found [
   5. To deploy Prometheus/Grafana, please follow the installation instructions for each tool in their respective documentation.
   6. Once Prometheus and Grafana are deployed, the exporter can be configured to scrape metrics data from your application or system and send it to Prometheus.
   7. Finally, you can use Grafana to create custom dashboards and visualize the metrics data collected by Prometheus.
-  8. This module is compatible with EKS version 1.23, which is great news for users deploying the module on an EKS cluster running that version. Review the module's documentation, meet specific configuration requirements, and test thoroughly after deployment to ensure everything works as expected.
-
+  8. This module is compatible with EKS, AKS & GKE which is great news for users deploying the module on an AWS, Azure & GCP cloud. Review the module's documentation, meet specific configuration requirements, and test thoroughly after deployment to ensure everything works as expected.
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
