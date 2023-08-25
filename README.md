@@ -29,7 +29,7 @@ The module also includes sensible defaults for all configuration options, making
 
 ```hcl
 module "aws" {
-  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//provider/aws"
+  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/aws"
   environment                      = "prod"
   name                             = "rabbitmq"
   store_password_to_secret_manager = true

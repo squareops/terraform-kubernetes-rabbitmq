@@ -16,7 +16,7 @@ locals {
 }
 
 module "gcp" {
-  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//provider/gcp"
+  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/gcp"
   project_id                       = ""
   environment                      = local.environment
   name                             = local.name
