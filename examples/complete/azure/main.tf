@@ -16,7 +16,7 @@ locals {
 }
 
 module "azure" {
-  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//provider/azure"
+  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/azure"
   resource_group_name              = ""
   resource_group_location          = local.region
   environment                      = local.environment

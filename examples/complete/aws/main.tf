@@ -16,7 +16,7 @@ locals {
 }
 
 module "aws" {
-  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//provider/aws"
+  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/aws"
   environment                      = local.environment
   name                             = local.name
   store_password_to_secret_manager = local.store_password_to_secret_manager
