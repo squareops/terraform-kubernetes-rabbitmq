@@ -7,7 +7,9 @@ locals {
     Expires    = "Never"
     Department = "Engineering"
   }
-  store_password_to_secret_manager = true
+  create_namespace                 = false
+  namespace                        = ""
+  store_password_to_secret_manager = false
   custom_credentials_enabled       = false
   custom_credentials_config = {
     rabbitmq_password     = "aa0z1IoRjOgRuon3aG",
@@ -25,7 +27,9 @@ module "aws" {
 }
 
 module "rabbitmq" {
-  source = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  source           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  create_namespace = local.create_namespace
+  namespace        = local.namespace
   rabbitmq_config = {
     name                             = local.name
     hostname                         = "rabbitmq.squareops.in"
