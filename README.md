@@ -20,7 +20,7 @@ The module also includes sensible defaults for all configuration options, making
 
   ## Supported Versions:
 
-|  Rabbitmq Helm Chart Version    |     K8s supported version   |  
+|  Rabbitmq Helm Chart Version    |     K8s supported version (EKS, AKS & GCP)   |  
 | :-----:                       |         :---                |
 | **10.3.5**                     |    **1.23,1.24,1.25,1.26,1.27**           |
 
@@ -28,29 +28,61 @@ The module also includes sensible defaults for all configuration options, making
 ## Usage Example
 
 ```hcl
-module "rabbitmq" {
-  source               = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
-  rabbitmq_config = {
-    name                             = "rabbitmq"
-    hostname                         = "rabbitmq.squareops.in"
-    environment                      = "prod"
-    values_yaml                      = ""
-    volume_size                      = "50Gi"
-    replica_count                    = 2  
-    storage_class_name               = "gp3"
-    store_password_to_secret_manager = true
-   }
-  rabbitmq_exporter_enabled  = true
-  recovery_window_aws_secret = 0
+locals {
+  name        = "rabbitmq"
+  region      = "us-east-2"
+  environment = "prod"
+  additional_tags = {
+    Owner      = "organization_name"
+    Expires    = "Never"
+    Department = "Engineering"
+  }
+  create_namespace                 = true
+  namespace                        = "rabbitmq"
+  store_password_to_secret_manager = false
+  custom_credentials_enabled       = false
   custom_credentials_config = {
     rabbitmq_password     = "aa0z1IoRjOgRuon3aG",
     erlangcookie_password = "bbddff0z1IoRuon3aG"
   }
 }
 
+module "aws" {
+  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/aws"
+  environment                      = local.environment
+  name                             = local.name
+  store_password_to_secret_manager = local.store_password_to_secret_manager
+  custom_credentials_enabled       = local.custom_credentials_enabled
+  custom_credentials_config        = local.custom_credentials_config
+}
+
+module "rabbitmq" {
+  source           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  create_namespace = local.create_namespace
+  namespace        = local.namespace
+  rabbitmq_config = {
+    name                             = local.name
+    hostname                         = "rabbitmq.squareops.in"
+    environment                      = local.environment
+    values_yaml                      = ""
+    volume_size                      = "50Gi"
+    replica_count                    = 2
+    storage_class_name               = "infra-service-sc"
+    store_password_to_secret_manager = local.store_password_to_secret_manager
+  }
+  rabbitmq_exporter_enabled  = true
+  recovery_window_aws_secret = 0
+  custom_credentials_enabled = local.custom_credentials_enabled
+  custom_credentials_config  = local.custom_credentials_config
+  rabbitmq_password          = local.custom_credentials_enabled ? "" : module.aws.rabbitmq_password
+  erlangcookie_password      = local.custom_credentials_enabled ? "" : module.aws.erlangcookie_password
+}
+
 
 ```
-Refer [examples](https://github.com/sq-ia/terraform-kubernetes-rabbitmq/tree/main/examples/complete) for more details.
+- Refer [AWS examples](https://github.com/sq-ia/terraform-kubernetes-rabbitmq/tree/main/examples/complete/aws) for more details.
+- Refer [Azure examples](https://github.com/sq-ia/terraform-kubernetes-rabbitmq/tree/main/examples/complete/azure) for more details.
+- Refer [GCP examples](https://github.com/sq-ia/terraform-kubernetes-rabbitmq/tree/main/examples/complete/gcp) for more details.
 
 ## IAM Permissions
 The required IAM permissions to create resources from this module can be found [here](https://github.com/sq-ia/terraform-kubernetes-rabbitmq/blob/main/IAM.md)
@@ -63,8 +95,7 @@ The required IAM permissions to create resources from this module can be found [
   5. To deploy Prometheus/Grafana, please follow the installation instructions for each tool in their respective documentation.
   6. Once Prometheus and Grafana are deployed, the exporter can be configured to scrape metrics data from your application or system and send it to Prometheus.
   7. Finally, you can use Grafana to create custom dashboards and visualize the metrics data collected by Prometheus.
-  8. This module is compatible with EKS version 1.23, which is great news for users deploying the module on an EKS cluster running that version. Review the module's documentation, meet specific configuration requirements, and test thoroughly after deployment to ensure everything works as expected.
-
+  8. This module is compatible with EKS, AKS & GKE which is great news for users deploying the module on an AWS, Azure & GCP cloud. Review the module's documentation, meet specific configuration requirements, and test thoroughly after deployment to ensure everything works as expected.
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -74,10 +105,8 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
-| <a name="provider_random"></a> [random](#provider\_random) | n/a |
 
 ## Modules
 
@@ -87,12 +116,8 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_secretsmanager_secret.rabbitmq_password](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
-| [aws_secretsmanager_secret_version.rabbitmq_password](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
 | [helm_release.rabbitmq](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_namespace.rabbitmq](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
-| [random_password.erlangcookie_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
-| [random_password.rabbitmq_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 
 ## Inputs
 
@@ -102,9 +127,11 @@ No modules.
 | <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | Specify whether or not to create the namespace if it does not already exist. Set it to true to create the namespace. | `string` | `true` | no |
 | <a name="input_custom_credentials_config"></a> [custom\_credentials\_config](#input\_custom\_credentials\_config) | Specify the configuration settings for Rabbitmq to pass custom credentials during creation. | `any` | <pre>{<br>  "erlangcookie_password": "",<br>  "rabbitmq_password": ""<br>}</pre> | no |
 | <a name="input_custom_credentials_enabled"></a> [custom\_credentials\_enabled](#input\_custom\_credentials\_enabled) | Specifies whether to enable custom credentials for Rabbitmq. | `bool` | `false` | no |
+| <a name="input_erlangcookie_password"></a> [erlangcookie\_password](#input\_erlangcookie\_password) | password for Rabbitmq erlangcookie | `string` | `""` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Name of the Kubernetes namespace where the RabbitMQ deployment will be deployed. | `string` | `"rabbitmq"` | no |
 | <a name="input_rabbitmq_config"></a> [rabbitmq\_config](#input\_rabbitmq\_config) | Specify the configuration settings for RabbitMQ, including the name, environment, storage options, replication settings, and custom YAML values. | `any` | <pre>{<br>  "environment": "",<br>  "hostname": "",<br>  "name": "",<br>  "replica_count": 2,<br>  "storage_class_name": "",<br>  "store_password_to_secret_manager": "",<br>  "values_yaml": "",<br>  "volume_size": ""<br>}</pre> | no |
 | <a name="input_rabbitmq_exporter_enabled"></a> [rabbitmq\_exporter\_enabled](#input\_rabbitmq\_exporter\_enabled) | Specify whether or not to deploy RabbitMQ exporter to collect RabbitMQ metrics for monitoring in Grafana. | `bool` | `true` | no |
+| <a name="input_rabbitmq_password"></a> [rabbitmq\_password](#input\_rabbitmq\_password) | password for Rabbitmq | `string` | `""` | no |
 | <a name="input_recovery_window_aws_secret"></a> [recovery\_window\_aws\_secret](#input\_recovery\_window\_aws\_secret) | Number of days that AWS Secrets Manager will wait before deleting a secret. This value can be set to 0 to force immediate deletion, or to a value between 7 and 30 days to allow for recovery. | `number` | `0` | no |
 | <a name="input_username"></a> [username](#input\_username) | Username that will be used for authentication when connecting to the RabbitMQ cluster. | `string` | `"admin"` | no |
 
