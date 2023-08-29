@@ -12,7 +12,7 @@ resource "helm_release" "rabbitmq" {
   chart      = "rabbitmq"
   version    = var.chart_version
   timeout    = 600
-  namespace  = var.create_namespace ? var.namespace : "default"
+  namespace  = var.namespace
   repository = "https://charts.bitnami.com/bitnami"
   values = [
     templatefile("${path.module}/helm/values/values.yaml", {
@@ -24,7 +24,7 @@ resource "helm_release" "rabbitmq" {
       rabbitmq_volume_size      = var.rabbitmq_config.volume_size,
       erlangcookie_password     = var.custom_credentials_enabled ? var.custom_credentials_config.erlangcookie_password : var.erlangcookie_password,
       rabbitmq_exporter_enabled = var.rabbitmq_exporter_enabled
-      service_monitor_namespace = var.create_namespace ? var.namespace : "default"
+      service_monitor_namespace = var.namespace
     }),
     var.rabbitmq_config.values_yaml
   ]

@@ -28,16 +28,32 @@ The module also includes sensible defaults for all configuration options, making
 ## Usage Example
 
 ```hcl
-module "aws" {
-  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/aws"
-  environment                      = "prod"
-  name                             = "rabbitmq"
-  store_password_to_secret_manager = true
-  custom_credentials_enabled       = true
-  custom_credentials_config        = {
+locals {
+  name        = "rabbitmq"
+  region      = "us-east-2"
+  environment = "prod"
+  additional_tags = {
+    Owner      = "organization_name"
+    Expires    = "Never"
+    Department = "Engineering"
+  }
+  create_namespace                 = true
+  namespace                        = "rabbitmq"
+  store_password_to_secret_manager = false
+  custom_credentials_enabled       = false
+  custom_credentials_config = {
     rabbitmq_password     = "aa0z1IoRjOgRuon3aG",
     erlangcookie_password = "bbddff0z1IoRuon3aG"
   }
+}
+
+module "aws" {
+  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/aws"
+  environment                      = local.environment
+  name                             = local.name
+  store_password_to_secret_manager = local.store_password_to_secret_manager
+  custom_credentials_enabled       = local.custom_credentials_enabled
+  custom_credentials_config        = local.custom_credentials_config
 }
 
 module "rabbitmq" {
@@ -48,7 +64,7 @@ module "rabbitmq" {
     name                             = local.name
     hostname                         = "rabbitmq.squareops.in"
     environment                      = local.environment
-    values_yaml                      = file("./helm/values.yaml")
+    values_yaml                      = ""
     volume_size                      = "50Gi"
     replica_count                    = 2
     storage_class_name               = "infra-service-sc"
