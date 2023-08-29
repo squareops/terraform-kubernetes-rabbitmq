@@ -7,6 +7,8 @@ locals {
     Expires    = "Never"
     Department = "Engineering"
   }
+  create_namespace                 = true
+  namespace                        = "rabbitmq"
   store_password_to_secret_manager = true
   custom_credentials_enabled       = false
   custom_credentials_config = {
@@ -28,7 +30,9 @@ module "azure" {
 }
 
 module "rabbitmq" {
-  source = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  source           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  create_namespace = local.create_namespace
+  namespace        = local.namespace
   rabbitmq_config = {
     name                             = local.name
     environment                      = local.environment

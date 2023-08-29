@@ -1,8 +1,8 @@
 output "rabbitmq_endpoints" {
   description = "Rabbitmq endpoints in the Kubernetes cluster."
   value = {
-    rabbitmq_endpoint                  = "rabbitmq.${var.namespace}.svc.cluster.local"
-    rabbitmq_headless_endpoint         = "rabbitmq-headless.${var.namespace}.svc.cluster.local"
+    rabbitmq_endpoint                  = "rabbitmq.${var.namespace}.svc.cluster.local",
+    rabbitmq_headless_endpoint         = "rabbitmq-headless.${var.namespace}.svc.cluster.local",
     rabbitmq_AMQP_port                 = "5672"
     rabbitmq_management_interface_port = "15672"
     rabbitmq_management_hostname       = var.rabbitmq_config.hostname

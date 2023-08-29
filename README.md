@@ -28,41 +28,55 @@ The module also includes sensible defaults for all configuration options, making
 ## Usage Example
 
 ```hcl
-module "aws" {
-  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/aws"
-  environment                      = "prod"
-  name                             = "rabbitmq"
-  store_password_to_secret_manager = true
-  custom_credentials_enabled       = true
-  custom_credentials_config        = {
+locals {
+  name        = "rabbitmq"
+  region      = "us-east-2"
+  environment = "prod"
+  additional_tags = {
+    Owner      = "organization_name"
+    Expires    = "Never"
+    Department = "Engineering"
+  }
+  create_namespace                 = true
+  namespace                        = "rabbitmq"
+  store_password_to_secret_manager = false
+  custom_credentials_enabled       = false
+  custom_credentials_config = {
     rabbitmq_password     = "aa0z1IoRjOgRuon3aG",
     erlangcookie_password = "bbddff0z1IoRuon3aG"
   }
+}
+
+module "aws" {
+  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/aws"
+  environment                      = local.environment
+  name                             = local.name
+  store_password_to_secret_manager = local.store_password_to_secret_manager
+  custom_credentials_enabled       = local.custom_credentials_enabled
+  custom_credentials_config        = local.custom_credentials_config
 }
 
 module "rabbitmq" {
-  source = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  source           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  create_namespace = local.create_namespace
+  namespace        = local.namespace
   rabbitmq_config = {
-    name                             = "rabbitmq"
+    name                             = local.name
     hostname                         = "rabbitmq.squareops.in"
-    environment                      = "prod"
-    values_yaml                      = file("./helm/values.yaml")
+    environment                      = local.environment
+    values_yaml                      = ""
     volume_size                      = "50Gi"
     replica_count                    = 2
     storage_class_name               = "infra-service-sc"
-    store_password_to_secret_manager = true
+    store_password_to_secret_manager = local.store_password_to_secret_manager
   }
   rabbitmq_exporter_enabled  = true
   recovery_window_aws_secret = 0
-  custom_credentials_enabled = true
-  custom_credentials_config  = {
-    rabbitmq_password     = "aa0z1IoRjOgRuon3aG",
-    erlangcookie_password = "bbddff0z1IoRuon3aG"
-  }
-  rabbitmq_password          = true ? "" : module.aws.rabbitmq_password
-  erlangcookie_password      = true ? "" : module.aws.erlangcookie_password
+  custom_credentials_enabled = local.custom_credentials_enabled
+  custom_credentials_config  = local.custom_credentials_config
+  rabbitmq_password          = local.custom_credentials_enabled ? "" : module.aws.rabbitmq_password
+  erlangcookie_password      = local.custom_credentials_enabled ? "" : module.aws.erlangcookie_password
 }
-
 
 
 ```
