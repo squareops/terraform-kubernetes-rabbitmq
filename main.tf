@@ -23,7 +23,7 @@ resource "helm_release" "rabbitmq" {
       storage_class_name        = var.rabbitmq_config.storage_class_name,
       rabbitmq_volume_size      = var.rabbitmq_config.volume_size,
       erlangcookie_password     = var.custom_credentials_enabled ? var.custom_credentials_config.erlangcookie_password : var.erlangcookie_password,
-      rabbitmq_exporter_enabled = var.rabbitmq_exporter_enabled
+      rabbitmq_exporter_enabled = var.rabbitmq_exporter_enabled,
       service_monitor_namespace = var.namespace
     }),
     var.rabbitmq_config.values_yaml
