@@ -215,7 +215,7 @@ auth:
     serverKey: |-
     existingSecret: ""
     existingSecretFullChain: false
-    
+
 
 ## @param logs Path of the RabbitMQ server's Erlang log file. Value for the `RABBITMQ_LOGS` environment variable
 ## ref: https://www.rabbitmq.com/logging.html#log-file-location
@@ -1264,7 +1264,7 @@ networkPolicy:
    ## @param networkPolicy.kubeAPIServerPorts [array] List of possible endpoints to kube-apiserver (limit to your cluster settings to increase security)
   ##
   kubeAPIServerPorts: [443, 6443, 8443]
-  
+
   ## @param networkPolicy.allowExternal Don't require server label for connections
   ## The Policy model to apply. When set to false, only pods with the correct
   ## server label will have network access to the ports server is listening
@@ -1512,7 +1512,7 @@ volumePermissions:
     ##   - myRegistryKeySecretName
     ##
     pullSecrets: []
-  
+
 
   ## Init Container resource requests and limits
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
