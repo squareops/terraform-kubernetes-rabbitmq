@@ -22,7 +22,7 @@ The module also includes sensible defaults for all configuration options, making
 
 |  Rabbitmq Helm Chart Version    |     K8s supported version (EKS, AKS & GCP)   |  
 | :-----:                       |         :---                |
-| **10.3.5**                     |    **1.23,1.24,1.25,1.26,1.27**           |
+| **14.4.6**                     |    **1.23,1.24,1.25,1.26,1.27,1.28,1.29**           |
 
 
 ## Usage Example
