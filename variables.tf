@@ -26,7 +26,7 @@ variable "namespace" {
 }
 
 variable "chart_version" {
-  default     = "10.3.5"
+  default     = "14.4.6"
   type        = string
   description = "Version of the RabbitMQ chart that will be used to deploy the message broker."
 }

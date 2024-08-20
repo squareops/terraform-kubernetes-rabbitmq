@@ -22,7 +22,7 @@ The module also includes sensible defaults for all configuration options, making
 
 |  Rabbitmq Helm Chart Version    |     K8s supported version (EKS, AKS & GCP)   |  
 | :-----:                       |         :---                |
-| **10.3.5**                     |    **1.23,1.24,1.25,1.26,1.27**           |
+| **14.4.6**                     |    **1.23,1.24,1.25,1.26,1.27,1.28,1.29**           |
 
 
 ## Usage Example
@@ -123,7 +123,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Version of the RabbitMQ chart that will be used to deploy the message broker. | `string` | `"10.3.5"` | no |
+| <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Version of the RabbitMQ chart that will be used to deploy the message broker. | `string` | `"14.4.6"` | no |
 | <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | Specify whether or not to create the namespace if it does not already exist. Set it to true to create the namespace. | `string` | `true` | no |
 | <a name="input_custom_credentials_config"></a> [custom\_credentials\_config](#input\_custom\_credentials\_config) | Specify the configuration settings for Rabbitmq to pass custom credentials during creation. | `any` | <pre>{<br>  "erlangcookie_password": "",<br>  "rabbitmq_password": ""<br>}</pre> | no |
 | <a name="input_custom_credentials_enabled"></a> [custom\_credentials\_enabled](#input\_custom\_credentials\_enabled) | Specifies whether to enable custom credentials for Rabbitmq. | `bool` | `false` | no |
