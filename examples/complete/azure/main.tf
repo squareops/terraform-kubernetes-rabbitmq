@@ -1,6 +1,6 @@
 locals {
   name        = "rabbitmq"
-  region      = "eastus"
+  region      = ""
   environment = "prod"
   additional_tags = {
     Owner      = "organization_name"
@@ -18,7 +18,7 @@ locals {
 }
 
 module "azure" {
-  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/azure"
+  source                           = "../../..//modules/resources/azure"
   resource_group_name              = ""
   resource_group_location          = local.region
   environment                      = local.environment
@@ -30,7 +30,7 @@ module "azure" {
 }
 
 module "rabbitmq" {
-  source           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  source           = "../../../"
   create_namespace = local.create_namespace
   namespace        = local.namespace
   rabbitmq_config = {
