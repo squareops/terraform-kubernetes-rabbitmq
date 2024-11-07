@@ -18,7 +18,7 @@ locals {
 }
 
 module "azure" {
-  source                           = "../../..//modules/resources/azure"
+  source                           = "squareops/rabbitmq/kubernetes//modules/resources/azure"
   resource_group_name              = ""
   resource_group_location          = local.region
   environment                      = local.environment
@@ -30,7 +30,8 @@ module "azure" {
 }
 
 module "rabbitmq" {
-  source           = "../../../"
+  source           = "squareops/rabbitmq/kubernetes"
+  version          = "2.1.1"
   create_namespace = local.create_namespace
   namespace        = local.namespace
   rabbitmq_config = {

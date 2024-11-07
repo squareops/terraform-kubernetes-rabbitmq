@@ -48,7 +48,7 @@ locals {
 }
 
 module "aws" {
-  source                           = "https://github.com/squareops/terraform-kubernetes-rabbitmq.git//modules/resources/aws"
+  source                           = "squareops/rabbitmq/kubernetes//modules/resources/aws"
   environment                      = local.environment
   name                             = local.name
   store_password_to_secret_manager = local.store_password_to_secret_manager
@@ -57,7 +57,8 @@ module "aws" {
 }
 
 module "rabbitmq" {
-  source           = "https://github.com/squareops/terraform-kubernetes-rabbitmq.git"
+  source           = "squareops/rabbitmq/kubernetes"
+  version          = "2.1.1"
   create_namespace = local.create_namespace
   namespace        = local.namespace
   rabbitmq_config = {
