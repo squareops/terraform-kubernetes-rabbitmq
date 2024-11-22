@@ -30,7 +30,7 @@ The module also includes sensible defaults for all configuration options, making
 ```hcl
 locals {
   name        = "rabbitmq"
-  region      = "us-east-2"
+  region      = ""
   environment = "prod"
   additional_tags = {
     Owner      = "organization_name"
@@ -48,7 +48,7 @@ locals {
 }
 
 module "aws" {
-  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/aws"
+  source                           = "squareops/rabbitmq/kubernetes//modules/resources/aws"
   environment                      = local.environment
   name                             = local.name
   store_password_to_secret_manager = local.store_password_to_secret_manager
@@ -57,14 +57,15 @@ module "aws" {
 }
 
 module "rabbitmq" {
-  source           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  source           = "squareops/rabbitmq/kubernetes"
+  version          = "2.1.1"
   create_namespace = local.create_namespace
   namespace        = local.namespace
   rabbitmq_config = {
     name                             = local.name
     hostname                         = "rabbitmq.squareops.in"
     environment                      = local.environment
-    values_yaml                      = ""
+    values_yaml                      = file("./helm/values.yaml")
     volume_size                      = "50Gi"
     replica_count                    = 2
     storage_class_name               = "infra-service-sc"
@@ -77,6 +78,7 @@ module "rabbitmq" {
   rabbitmq_password          = local.custom_credentials_enabled ? "" : module.aws.rabbitmq_password
   erlangcookie_password      = local.custom_credentials_enabled ? "" : module.aws.erlangcookie_password
 }
+
 
 
 ```
