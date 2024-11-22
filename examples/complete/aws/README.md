@@ -21,8 +21,8 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_aws"></a> [aws](#module\_aws) | https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/aws | n/a |
-| <a name="module_rabbitmq"></a> [rabbitmq](#module\_rabbitmq) | https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git | n/a |
+| <a name="module_aws"></a> [aws](#module\_aws) | squareops/rabbitmq/kubernetes//modules/resources/aws | n/a |
+| <a name="module_rabbitmq"></a> [rabbitmq](#module\_rabbitmq) | squareops/rabbitmq/kubernetes | n/a |
 
 ## Resources
 

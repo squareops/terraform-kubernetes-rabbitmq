@@ -1,6 +1,6 @@
 locals {
   name        = "rabbitmq"
-  region      = "us-east-2"
+  region      = ""
   environment = "prod"
   additional_tags = {
     Owner      = "organization_name"
@@ -18,7 +18,7 @@ locals {
 }
 
 module "gcp" {
-  source                           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git//modules/resources/gcp"
+  source                           = "squareops/rabbitmq/kubernetes//modules/resources/gcp"
   project_id                       = ""
   environment                      = local.environment
   name                             = local.name
@@ -28,7 +28,8 @@ module "gcp" {
 }
 
 module "rabbitmq" {
-  source           = "https://github.com/sq-ia/terraform-kubernetes-rabbitmq.git"
+  source           = "squareops/rabbitmq/kubernetes"
+  version          = "2.1.1"
   create_namespace = local.create_namespace
   namespace        = local.namespace
   rabbitmq_config = {
